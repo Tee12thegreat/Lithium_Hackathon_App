@@ -4,14 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>HITVOLT — Mobile App Preview</title>
-    <meta name="description" content="HitVolt cover app: mobile preview showing battery status and AI BMS features." />
+    <meta name="description" content="HitVolt cover app: mobile preview." />
     <style>
         :root{
             --accent:#00e0a1;
             --accent-2:#00a6ff;
-            --txt:#e6f3ff; /* Page text (light) */
-            --app-bg: #f4f7fa; /* Phone Screen BG (light) */
-            --app-txt: #1a2b3c; /* Phone Screen Text (dark) */
+            --txt:#e6f3ff;
+            --app-bg: #f4f7fa;
+            --app-txt: #1a2b3c;
             --app-card: #ffffff;
             --card-radius:18px;
             --mono: "Segoe UI Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
@@ -26,7 +26,9 @@
             align-items:center;
             justify-content:center;
             min-height:100vh;
-            padding:24px;
+            /* Responsive padding to prevent edges sticking */
+            padding: 20px;
+            padding-top: 80px; /* Space for the back button */
             position: relative;
             overflow-x: hidden;
         }
@@ -51,6 +53,7 @@
             gap:60px;
             align-items:center;
             justify-content:center;
+            flex-wrap: wrap; /* Allows stacking on smaller screens */
         }
 
         /* Left Panel Text */
@@ -59,35 +62,70 @@
             backdrop-filter: blur(12px);
             padding:40px;
             border-radius:var(--card-radius);
-            width:480px;
+            width: 100%; 
+            max-width: 480px; /* Limits width on desktop, but allows full width on mobile */
             box-shadow:0 14px 50px rgba(0,0,0,0.4);
             border:1px solid rgba(255,255,255,0.08);
         }
 
-        /* Phone Chassis - More Realistic */
-        .phone-wrap{width:360px;display:flex;justify-content:center;perspective: 1000px;}
+        /* Phone Chassis */
+        .phone-wrap{
+            /* Base size for desktop */
+            width:360px;
+            height: 700px;
+            display:flex;
+            justify-content:center;
+            align-items: center;
+            perspective: 1000px;
+            /* Shrink slightly if screen is short */
+            flex-shrink: 0;
+        }
+        
         .phone{
             width:320px;
             height:680px;
             border-radius:48px;
-            background:#010101; /* Black Bezel */
+            background:#010101;
             padding:12px;
-            border:4px solid #333; /* Outer rim */
+            border:4px solid #333;
             box-shadow:
-                0 0 0 2px #000, /* Inner bezel definition */
-                0 20px 50px rgba(0,0,0,0.7), /* Drop shadow */
-                inset 0 0 20px rgba(255,255,255,0.1); /* Glare */
+                0 0 0 2px #000,
+                0 20px 50px rgba(0,0,0,0.7),
+                inset 0 0 20px rgba(255,255,255,0.1);
             position:relative;
-            transform: rotateY(-5deg) rotateX(2deg); /* Slight 3D tilt */
+            transform: rotateY(-5deg) rotateX(2deg);
             transition: transform 0.3s ease;
+            transform-origin: center center;
         }
         .phone:hover{ transform: rotateY(0) rotateX(0); }
 
-        /* Physical Buttons (Decorative) */
+        /* Responsive Logic for the Phone Graphic */
+        @media (max-width: 950px){
+            .wrap{ flex-direction:column; gap:40px; }
+            .panel{ max-width: 600px; text-align: center; }
+            .ai-badge { display: inline-block; }
+        }
+
+        @media (max-width: 480px){
+            /* Scale the phone down to fit mobile screens using CSS Transform */
+            .phone-wrap {
+                width: 100%;
+                height: 600px; /* Reduce container height */
+                overflow: hidden;
+            }
+            .phone {
+                /* Shrink the phone to 85% size so it fits in 360px viewport */
+                transform: scale(0.85) !important; 
+            }
+            .panel { padding: 24px; }
+            a.back { top: 15px; left: 15px; font-size: 14px; padding: 8px 12px; }
+            body { padding-top: 60px; }
+        }
+
+        /* Physical Buttons */
         .phone::before { content:''; position:absolute; right:-6px; top:160px; width:6px; height:60px; background:#222; border-radius:0 4px 4px 0; }
         .phone::after { content:''; position:absolute; left:-6px; top:120px; width:6px; height:100px; background:#222; border-radius:4px 0 0 4px; }
 
-        /* Dynamic Notch */
         .notch-container{
             position:absolute; top:12px; left:50%; transform:translateX(-50%);
             width:120px; height:30px; background:#000;
@@ -95,7 +133,6 @@
             z-index:10;
         }
 
-        /* The Screen Area */
         .screen{
             background: var(--app-bg);
             height:100%;
@@ -108,7 +145,6 @@
             position:relative;
         }
 
-        /* App Header / Status Bar */
         .status-bar{
             height:44px; padding:0 24px; display:flex; justify-content:space-between; align-items:center;
             font-size:12px; font-weight:600; color:#333; margin-top:4px;
@@ -117,25 +153,23 @@
             padding:20px; flex:1; display:flex; flex-direction:column; align-items:center;
         }
 
-        /* Battery Graphic */
         .battery-large{width:180px;height:100px;margin-top:10px; filter:drop-shadow(0 10px 20px rgba(0,166,255,0.2));}
         
-        /* Stats Grid */
         .params{
             margin-top:24px; width:100%; display:grid; grid-template-columns:1fr 1fr; gap:12px;
         }
         .param{
             background: var(--app-card);
             padding:12px; border-radius:14px; text-align:center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Soft shadow for depth */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             border:1px solid rgba(0,0,0,0.02);
         }
         
         .small{ font-size:11px; color:#8899a6; text-transform:uppercase; letter-spacing:0.5px; font-weight:600;}
         .val{ font-weight:800; font-size:18px; color:var(--app-txt); margin-top:4px; }
 
-        h1{font-size:20px;margin:0 0 6px}
-        p.lead{color:rgba(230,243,255,0.78);margin:0 0 12px}
+        h1{font-size:24px;margin:0 0 10px}
+        p.lead{color:rgba(230,243,255,0.78);margin:0 0 16px; line-height: 1.5;}
         
         .ai-badge{
             display:inline-block;padding:8px 12px;border-radius:20px;
@@ -144,19 +178,13 @@
             font-weight:700; margin-top:6px; font-size:12px;
         }
 
-        /* App Slider */
         .controls{margin-top:auto;width:100%; background:var(--app-card); padding:16px; border-radius:20px; box-shadow:0 4px 20px rgba(0,0,0,0.06);}
         .slider{width:100%; accent-color: var(--accent-2); cursor: pointer;}
         
-        .footer-note{margin-top:14px;font-size:13px;color:rgba(230,243,255,0.6)}
-        
-        /* Home Indicator */
-        .home-bar{
-            width:100px; height:5px; background:#ccc; border-radius:10px; margin:8px auto;
-        }
+        .home-bar{ width:100px; height:5px; background:#ccc; border-radius:10px; margin:8px auto; }
 
         a.back{
-            position:fixed;left:30px;top:30px;
+            position:fixed;left:30px;top:30px; z-index: 100;
             color:var(--txt);text-decoration:none;
             border:1px solid rgba(255,255,255,0.2);
             padding:10px 16px;border-radius:10px;
@@ -166,13 +194,6 @@
             transition:0.2s;
         }
         a.back:hover{background:rgba(255,255,255,0.1);}
-
-        @media (max-width:950px){
-            body{align-items:flex-start;padding-top:80px; height:auto;}
-            .wrap{flex-direction:column; gap:40px;}
-            .panel{width:100%; max-width:480px;}
-            .phone-wrap{margin-bottom:40px;}
-        }
     </style>
 </head>
 <body>
@@ -185,7 +206,7 @@
             <div class="ai-badge">✨ AI-Powered Prediction</div>
             <div style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;">
                 <p style="font-size:14px; color:rgba(230,243,255,0.8); line-height:1.6;">
-                    The preview on the right demonstrates our <strong>Light Mode</strong> UI. Drag the slider inside the phone simulator to see how the AI reacts to different State of Charge (SoC) levels.
+                    The preview demonstrates our <strong>Light Mode</strong> UI. Drag the slider inside the phone simulator to see how the AI reacts to different State of Charge (SoC) levels.
                 </p>
             </div>
         </div>
@@ -271,23 +292,17 @@
     const aiNote = document.getElementById('aiNote');
 
     function updateMobile(v){
-        const maxW = 220; // match SVG inner width
+        const maxW = 220; 
         const w = Math.round((v/100)*maxW);
         mFill.setAttribute('width', w);
         mPct.textContent = v + '%';
         
-        // simulate voltage proportional to SOC
         const volt = (48 + (v/100)*8).toFixed(1);
         mVolt.textContent = volt + 'V';
-        
-        // simulate range (arbitrary 120 mile max)
         mRange.textContent = Math.round(v * 1.2) + ' mi';
-
-        // temp gently increases with SOC
         const temp = Math.round(22 + (v/100)*10 + (Math.random()-0.5)*1.2);
         mTemp.textContent = temp + '°C';
         
-        // AI mode suggestions
         if(v < 20) { 
             mMode.textContent = 'Conserve'; 
             mMode.style.color = '#ff9900';
