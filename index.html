@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>HITVOLT — Lithium Battery Assemblies</title>
+    <meta name="description" content="HITVOLT — high-performance lithium battery assembly. Real-time metrics, product highlights, and contact." />
+    <style>
+        :root{
+            --accent:#00e0a1;
+            --accent-2:#00a6ff;
+            --glass: rgba(7, 26, 43, 0.65);
+            --glass-2: rgba(7, 16, 33, 0.75);
+            --card-radius:14px;
+            --max-w:1100px;
+            --txt:#e6f3ff;
+            --mono: "Segoe UI Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+        }
+        *{box-sizing:border-box}
+        html,body{height:100%}
+        
+        body{
+            margin:0;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            color:var(--txt);
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:40px;
+            position: relative;
+            overflow-x: hidden; 
+        }
+
+        /* The Blurred Background Layer */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -20px; 
+            /* Abstract Tech Background Image */
+            background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            
+            /* The Blur and Darkening Magic */
+            filter: blur(10px) brightness(0.35) contrast(1.1);
+            z-index: -1;
+        }
+
+        .container{
+            width:100%;
+            max-width:var(--max-w);
+            display:grid;
+            grid-template-columns: 1fr 420px;
+            gap:28px;
+            align-items:start;
+        }
+
+        /* Left hero */
+        .hero{
+            background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius:var(--card-radius);
+            padding:40px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            position:relative;
+            overflow:hidden;
+        }
+        .logo{
+            display:flex;
+            gap:14px;
+            align-items:center;
+            margin-bottom:18px;
+        }
+        .badge{
+            width:56px;height:56px;display:grid;place-items:center;border-radius:12px;
+            background:linear-gradient(135deg,var(--accent),var(--accent-2));
+            box-shadow: 0 6px 20px rgba(0,160,255,0.12), inset 0 -6px 18px rgba(0,0,0,0.2);
+            flex:0 0 56px;
+        }
+        .name{
+            font-weight:700;font-size:20px;letter-spacing:0.3px;
+        }
+        .tag{font-size:13px;color:rgba(230,243,255,0.72);margin-top:6px}
+
+        h1{margin:10px 0 6px;font-size:36px;line-height:1.02; text-shadow: 0 2px 10px rgba(0,0,0,0.5);}
+        p.lead{color:rgba(230,243,255,0.85);margin:0 0 18px;max-width:60ch; text-shadow: 0 1px 2px rgba(0,0,0,0.5);}
+
+        .cta-row{display:flex;gap:12px;align-items:center;margin-top:18px}
+        
+        /* General Button Style */
+        .btn{
+            display: inline-block; /* Ensure link behaves like a button */
+            padding:12px 16px;border-radius:12px;border:0;cursor:pointer;
+            font-weight:600;background:var(--accent);color:#022322;box-shadow:0 6px 18px rgba(0,224,161,0.14);
+            transition: transform 0.2s ease;
+            text-decoration: none; /* Removes underline from links */
+            font-size: 14px; /* Consistent font size */
+            line-height: 1.2;
+        }
+        .btn:hover{transform:translateY(-2px);}
+        .btn.secondary{
+            background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.2);color:var(--txt);
+        }
+
+        /* Right card */
+        .card{
+            background:linear-gradient(180deg,var(--glass),var(--glass-2));
+            border-radius:14px;padding:18px;backdrop-filter: blur(12px);
+            border:1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .card.mobile-preview{
+            grid-column: 1 / -1;
+            padding:24px;
+            font-size:15px;
+        }
+        .battery-wrap{display:flex;flex-direction:column;gap:14px;align-items:center}
+        .battery-svg{width:220px;height:120px}
+        .slider{width:100%}
+        .stat-grid{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+        .stat{
+            flex:1 1 45%;background:rgba(0,0,0,0.3);padding:10px;border-radius:10px;
+            display:flex;flex-direction:column;gap:6px;border:1px solid rgba(255,255,255,0.05);
+        }
+        .stat strong{font-size:20px}
+        .clock{font-family:var(--mono);font-size:13px;color:rgba(230,243,255,0.8)}
+
+        footer{margin-top:18px;font-size:12px;color:rgba(230,243,255,0.6)}
+
+        .hero:before{
+            content:"";position:absolute;inset:0;
+            background:linear-gradient(120deg, rgba(0,166,255,0.04), rgba(0,224,161,0.03));
+            transform:skewY(-3deg) translateY(-6%);
+            pointer-events:none;
+            mix-blend-mode:screen;
+        }
+
+        .count{font-size:20px;font-weight:700}
+        .small{font-size:12px;color:rgba(230,243,255,0.6)}
+
+        @media (max-width:980px){
+            .container{grid-template-columns:1fr; padding:0}
+            body{padding:20px}
+            .card{order:2}
+        }
+    </style>
+</head>
+<body>
+    <div class="container" role="main">
+        <section class="hero" aria-labelledby="title">
+            <div class="logo" aria-hidden="false">
+                <div class="badge" aria-hidden="true">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M13 2L3 14h7l-1 8L21 10h-7l-0-8z" fill="#002a3a" opacity="0.12"/>
+                        <path d="M13 2L3 14h7l-1 8L21 10h-7l0-8z" fill="#fff"/>
+                        <path d="M11.5 5.5L10 11h5L12.5 18" stroke="#00a6ff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+                    </svg>
+                </div>
+                <div>
+                    <div class="name">HITVOLT</div>
+                    <div class="tag">Advanced lithium battery assemblies • Made for scale</div>
+                </div>
+            </div>
+
+            <h1 id="title">Reliable energy. Modular design. Fast delivery.</h1>
+            <p class="lead">HITVOLT develops high-density lithium battery packs and assembly solutions optimized for performance, safety, and manufacturability. Explore our products, track production, and request a quote — all from a single dashboard.</p>
+
+            <div class="cta-row">
+                <button class="btn" id="get-quote">Request Quote</button>
+                <button class="btn secondary" id="learn-more">Our Products</button>
+                <div style="flex:1"></div>
+                <div class="clock" id="clock" aria-live="polite">--:--:--</div>
+            </div>
+
+            <div style="display:flex;gap:12px;margin-top:20px;align-items:center">
+                <div style="flex:1">
+                    <div class="small">Featured</div>
+                    <div style="font-weight:700">Modular 100Ah Pack • IP67 • 5kW peak</div>
+                </div>
+                <div style="width:220px;text-align:right">
+                    <div class="small">Lead time</div>
+                    <div style="font-weight:700">2–4 weeks</div>
+                </div>
+            </div>
+
+            <footer>ISO 9001 • UL listed components • Custom engineering available</footer>
+        </section>
+
+        <aside class="card" aria-label="Battery Status Simulator">
+            <div class="battery-wrap">
+                <div style="width:100%;display:flex;justify-content:space-between;align-items:center">
+                    <span style="font-weight:700;font-size:14px">Live Simulation</span>
+                    <span class="small">Pack #402-A</span>
+                </div>
+                
+                <svg class="battery-svg" viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="4" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                    </defs>
+                    <rect x="10" y="20" width="200" height="80" rx="12" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="3"/>
+                    <path d="M214 45h6a4 4 0 0 1 4 4v22a4 4 0 0 1-4 4h-6" fill="rgba(255,255,255,0.4)"/>
+                    <rect id="chargeFill" x="14" y="24" width="0" height="72" rx="8" fill="var(--accent)" opacity="0.9" />
+                    <text id="percentText" x="110" y="68" text-anchor="middle" fill="#fff" font-family="sans-serif" font-weight="bold" font-size="24" style="text-shadow:0 2px 4px rgba(0,0,0,0.5)">0%</text>
+                </svg>
+
+                <div class="stat-grid" style="width:100%">
+                    <div class="stat">
+                        <span class="small">SOC</span>
+                        <strong id="socLabel">0%</strong>
+                    </div>
+                    <div class="stat">
+                        <span class="small">Temp</span>
+                        <strong id="temp">--°C</strong>
+                    </div>
+                    <div class="stat">
+                        <span class="small">Output (MWh)</span>
+                        <strong id="mwh">0.00</strong>
+                    </div>
+                    <div class="stat">
+                        <span class="small">Units</span>
+                        <strong id="units">0</strong>
+                    </div>
+                </div>
+
+                <div style="width:100%;margin-top:8px">
+                    <label for="charge" class="small" style="display:block;margin-bottom:4px">Manual Override (SoC)</label>
+                    <input type="range" id="charge" class="slider" min="0" max="100" value="72" />
+                </div>
+            </div>
+        </aside>
+
+        <aside class="card mobile-preview" aria-label="Mobile app preview">
+            <div style="display:flex;flex-direction:column;gap:12px;align-items:center;padding:10px">
+                <div style="font-weight:700">Mobile App Preview</div>
+                <p class="small" style="text-align:center;margin:0 0 8px;">Open the dedicated cover page to see a mobile mockup that displays live battery status and our AI-driven BMS features.</p>
+                
+                <a href="hitvolt-cover.html" class="btn">Open Cover App</a>
+                
+                <div class="small" style="margin-top:8px;color:rgba(230,243,255,0.6);text-align:center">Cutting-edge BMS technology that incorporates AI for predictive balancing and thermal management.</div>
+            </div>
+        </aside>
+    </div>
+
+    <div id="modal" role="dialog" aria-modal="true" style="display:none;position:fixed;inset:0;background:rgba(2,8,23,0.8);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;z-index:999;">
+        <div style="width:100%;max-width:720px;background:#0d1f33;border-radius:12px;padding:30px;border:1px solid rgba(255,255,255,0.1);box-shadow:0 20px 50px rgba(0,0,0,0.5);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <div style="font-weight:700;font-size:22px;color:#fff">Request a Quote</div>
+                <button id="closeModal" style="background:transparent;border:0;color:var(--txt);font-size:24px;cursor:pointer;opacity:0.7">✕</button>
+            </div>
+            <p style="color:rgba(230,243,255,0.8);margin-bottom:20px;">Tell us about your project and our team will respond within one business day.</p>
+            <form id="quoteForm" style="display:grid;grid-template-columns:1fr 1fr;gap:15px">
+                <input name="name" placeholder="Name" required style="padding:14px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.2);color:#fff"/>
+                <input name="company" placeholder="Company" style="padding:14px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.2);color:#fff"/>
+                <input name="email" placeholder="Email" type="email" required style="padding:14px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.2);color:#fff"/>
+                <input name="phone" placeholder="Phone" style="padding:14px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.2);color:#fff"/>
+                <textarea name="requirements" placeholder="Project requirements" style="grid-column:1/3;min-height:120px;padding:14px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.2);color:#fff;font-family:inherit"></textarea>
+                <button type="submit" style="grid-column:1/3;padding:14px;border-radius:10px;border:0;background:var(--accent);color:#022322;font-weight:700;cursor:pointer;margin-top:10px;font-size:16px">Send Request</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Identity & Clock
+        const clock = document.getElementById('clock');
+        function tick(){
+            const d = new Date();
+            clock.textContent = d.toLocaleTimeString();
+        }
+        tick(); setInterval(tick,1000);
+
+        // Battery fill dynamics
+        const charge = document.getElementById('charge');
+        const chargeFill = document.getElementById('chargeFill');
+        const percentText = document.getElementById('percentText');
+        const socLabel = document.getElementById('socLabel');
+
+        function updateBattery(v){
+            const maxW = 200; 
+            const w = Math.round((v/100)*maxW);
+            chargeFill.setAttribute('width', w);
+            percentText.textContent = v + '%';
+            socLabel.textContent = v + '%';
+            
+            chargeFill.style.filter = `drop-shadow(0 0 ${10*(v/100)}px var(--accent))`;
+            
+            if(v < 20) chargeFill.setAttribute('fill', '#ff3e3e');
+            else chargeFill.setAttribute('fill', 'var(--accent)');
+        }
+        updateBattery(parseInt(charge.value,10));
+        charge.addEventListener('input', e=> updateBattery(parseInt(e.target.value,10)));
+
+        // Live counters simulation
+        const unitsEl = document.getElementById('units');
+        const mwhEl = document.getElementById('mwh');
+        const tempEl = document.getElementById('temp');
+
+        let units = Math.floor(120 + Math.random()*80);
+        let mwh = (units * 0.012).toFixed(2); 
+        let temp = 28 + Math.floor(Math.random()*6);
+
+        unitsEl.textContent = units.toLocaleString();
+        mwhEl.textContent = parseFloat(mwh).toFixed(2);
+        tempEl.textContent = temp + '°C';
+
+        setInterval(()=>{
+            const delta = Math.random() < 0.85 ? 1 : 2;
+            units += delta;
+            mwh = (units * 0.012).toFixed(2);
+            temp += (Math.random()-0.5)*0.6;
+            temp = Math.max(18, Math.min(45, temp));
+            unitsEl.textContent = units.toLocaleString();
+            mwhEl.textContent = parseFloat(mwh).toFixed(2);
+            tempEl.textContent = Math.round(temp) + '°C';
+        }, 2200);
+
+        // Modal behavior
+        const modal = document.getElementById('modal');
+        document.getElementById('get-quote').addEventListener('click', ()=> modal.style.display='flex');
+        document.getElementById('closeModal').addEventListener('click', ()=> modal.style.display='none');
+        modal.addEventListener('click', e=> { if(e.target===modal) modal.style.display='none'; });
+
+        document.getElementById('quoteForm').addEventListener('submit', e=>{
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            const originalText = btn.textContent;
+            btn.textContent = 'Sending...';
+            btn.disabled = true;
+            setTimeout(()=>{
+                btn.textContent = 'Request Sent ✓';
+                setTimeout(()=>{ 
+                    modal.style.display='none'; 
+                    btn.textContent=originalText; 
+                    btn.disabled=false; 
+                    e.target.reset(); 
+                }, 1200);
+            }, 900);
+        });
+
+        document.addEventListener('keydown', e=>{
+            if(e.key==='Escape' && modal.style.display==='flex') modal.style.display='none';
+        });
+
+        document.getElementById('learn-more').addEventListener('click', ()=>{
+            alert('Redirecting to product catalog (demo).');
+        });
+
+        const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+        if(mq.matches){
+            charge.style.transition = 'none';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>HITVOLT — Mobile App Preview</title>
+    <meta name="description" content="HitVolt cover app: mobile preview showing battery status and AI BMS features." />
+    <style>
+        :root{
+            --accent:#00e0a1;
+            --accent-2:#00a6ff;
+            --txt:#e6f3ff; /* Page text (light) */
+            --app-bg: #f4f7fa; /* Phone Screen BG (light) */
+            --app-txt: #1a2b3c; /* Phone Screen Text (dark) */
+            --app-card: #ffffff;
+            --card-radius:18px;
+            --mono: "Segoe UI Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+        }
+        *{box-sizing:border-box}
+        
+        body{
+            margin:0;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            color:var(--txt);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            min-height:100vh;
+            padding:24px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Blurred Background Layer */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -20px;
+            background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: blur(10px) brightness(0.35) contrast(1.1);
+            z-index: -1;
+        }
+
+        .wrap{
+            max-width:1100px;
+            width:100%;
+            display:flex;
+            gap:60px;
+            align-items:center;
+            justify-content:center;
+        }
+
+        /* Left Panel Text */
+        .panel{
+            background: rgba(7, 26, 43, 0.65);
+            backdrop-filter: blur(12px);
+            padding:40px;
+            border-radius:var(--card-radius);
+            width:480px;
+            box-shadow:0 14px 50px rgba(0,0,0,0.4);
+            border:1px solid rgba(255,255,255,0.08);
+        }
+
+        /* Phone Chassis - More Realistic */
+        .phone-wrap{width:360px;display:flex;justify-content:center;perspective: 1000px;}
+        .phone{
+            width:320px;
+            height:680px;
+            border-radius:48px;
+            background:#010101; /* Black Bezel */
+            padding:12px;
+            border:4px solid #333; /* Outer rim */
+            box-shadow:
+                0 0 0 2px #000, /* Inner bezel definition */
+                0 20px 50px rgba(0,0,0,0.7), /* Drop shadow */
+                inset 0 0 20px rgba(255,255,255,0.1); /* Glare */
+            position:relative;
+            transform: rotateY(-5deg) rotateX(2deg); /* Slight 3D tilt */
+            transition: transform 0.3s ease;
+        }
+        .phone:hover{ transform: rotateY(0) rotateX(0); }
+
+        /* Physical Buttons (Decorative) */
+        .phone::before { content:''; position:absolute; right:-6px; top:160px; width:6px; height:60px; background:#222; border-radius:0 4px 4px 0; }
+        .phone::after { content:''; position:absolute; left:-6px; top:120px; width:6px; height:100px; background:#222; border-radius:4px 0 0 4px; }
+
+        /* Dynamic Notch */
+        .notch-container{
+            position:absolute; top:12px; left:50%; transform:translateX(-50%);
+            width:120px; height:30px; background:#000;
+            border-bottom-left-radius:16px; border-bottom-right-radius:16px;
+            z-index:10;
+        }
+
+        /* The Screen Area */
+        .screen{
+            background: var(--app-bg);
+            height:100%;
+            width:100%;
+            border-radius:36px;
+            overflow:hidden;
+            color:var(--app-txt);
+            display:flex;
+            flex-direction:column;
+            position:relative;
+        }
+
+        /* App Header / Status Bar */
+        .status-bar{
+            height:44px; padding:0 24px; display:flex; justify-content:space-between; align-items:center;
+            font-size:12px; font-weight:600; color:#333; margin-top:4px;
+        }
+        .app-content{
+            padding:20px; flex:1; display:flex; flex-direction:column; align-items:center;
+        }
+
+        /* Battery Graphic */
+        .battery-large{width:180px;height:100px;margin-top:10px; filter:drop-shadow(0 10px 20px rgba(0,166,255,0.2));}
+        
+        /* Stats Grid */
+        .params{
+            margin-top:24px; width:100%; display:grid; grid-template-columns:1fr 1fr; gap:12px;
+        }
+        .param{
+            background: var(--app-card);
+            padding:12px; border-radius:14px; text-align:center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* Soft shadow for depth */
+            border:1px solid rgba(0,0,0,0.02);
+        }
+        
+        .small{ font-size:11px; color:#8899a6; text-transform:uppercase; letter-spacing:0.5px; font-weight:600;}
+        .val{ font-weight:800; font-size:18px; color:var(--app-txt); margin-top:4px; }
+
+        h1{font-size:20px;margin:0 0 6px}
+        p.lead{color:rgba(230,243,255,0.78);margin:0 0 12px}
+        
+        .ai-badge{
+            display:inline-block;padding:8px 12px;border-radius:20px;
+            background:linear-gradient(90deg,var(--accent),var(--accent-2));
+            color:#fff; text-shadow:0 1px 2px rgba(0,0,0,0.2);
+            font-weight:700; margin-top:6px; font-size:12px;
+        }
+
+        /* App Slider */
+        .controls{margin-top:auto;width:100%; background:var(--app-card); padding:16px; border-radius:20px; box-shadow:0 4px 20px rgba(0,0,0,0.06);}
+        .slider{width:100%; accent-color: var(--accent-2); cursor: pointer;}
+        
+        .footer-note{margin-top:14px;font-size:13px;color:rgba(230,243,255,0.6)}
+        
+        /* Home Indicator */
+        .home-bar{
+            width:100px; height:5px; background:#ccc; border-radius:10px; margin:8px auto;
+        }
+
+        a.back{
+            position:fixed;left:30px;top:30px;
+            color:var(--txt);text-decoration:none;
+            border:1px solid rgba(255,255,255,0.2);
+            padding:10px 16px;border-radius:10px;
+            background:rgba(0,0,0,0.4);
+            backdrop-filter:blur(4px);
+            font-weight:600;
+            transition:0.2s;
+        }
+        a.back:hover{background:rgba(255,255,255,0.1);}
+
+        @media (max-width:950px){
+            body{align-items:flex-start;padding-top:80px; height:auto;}
+            .wrap{flex-direction:column; gap:40px;}
+            .panel{width:100%; max-width:480px;}
+            .phone-wrap{margin-bottom:40px;}
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back">← Back to Home</a>
+    
+    <div class="wrap">
+        <div class="panel">
+            <h1>HITVOLT Mobile App</h1>
+            <p class="lead">Monitor your energy in real-time. Our companion app connects via Bluetooth/WiFi to give you granular control over the Battery Management System.</p>
+            <div class="ai-badge">✨ AI-Powered Prediction</div>
+            <div style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;">
+                <p style="font-size:14px; color:rgba(230,243,255,0.8); line-height:1.6;">
+                    The preview on the right demonstrates our <strong>Light Mode</strong> UI. Drag the slider inside the phone simulator to see how the AI reacts to different State of Charge (SoC) levels.
+                </p>
+            </div>
+        </div>
+
+        <div class="phone-wrap">
+            <div class="phone">
+                <div class="notch-container"></div>
+                
+                <div class="screen">
+                    <div class="status-bar">
+                        <span>9:41</span>
+                        <div style="display:flex;gap:6px">
+                            <svg width="14" height="14" fill="#333" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h-2v-6h2v6zm0-8h-2V7h2v2z" opacity="0"/><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                            <svg width="16" height="14" fill="#333" viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a6.97 6.97 0 0 0-6 0zm-4-4l2 2a9.95 9.95 0 0 1 14 0l2-2c-4.97-4.97-13.03-4.97-18 0z"/></svg>
+                            <svg width="20" height="14" fill="#333" viewBox="0 0 24 24"><path d="M17 5v14h-2V5h2m-4 0v14h-2V5h2m-4 0v14H7V5h2m10-4H5c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V3c0-1.1-.9-2-2-2z"/></svg>
+                        </div>
+                    </div>
+
+                    <div class="app-content">
+                        <div style="font-weight:700; font-size:16px; margin-bottom:10px; color:#556;">Pack #402-A</div>
+                        
+                        <svg class="battery-large" viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="mg1" x1="0" x2="1">
+                                    <stop offset="0%" stop-color="#00e0a1"/>
+                                    <stop offset="100%" stop-color="#00a6ff"/>
+                                </linearGradient>
+                                <clipPath id="clipM">
+                                    <rect x="10" y="10" width="220" height="100" rx="14"/>
+                                </clipPath>
+                            </defs>
+                            <rect x="6" y="6" width="232" height="118" rx="18" fill="none" stroke="#d0dbe6" stroke-width="4"/>
+                            <rect x="240" y="44" width="8" height="36" rx="3" fill="#d0dbe6"/>
+                            <g clip-path="url(#clipM)">
+                                <rect x="10" y="10" width="220" height="100" rx="14" fill="#eef2f6"/>
+                                <rect id="mFill" x="10" y="10" width="0" height="100" rx="14" fill="url(#mg1)"/>
+                            </g>
+                            <text id="mPct" x="120" y="68" text-anchor="middle" font-weight="800" font-size="28" fill="#1a2b3c" style="text-shadow: 0 2px 0 rgba(255,255,255,0.5)">70%</text>
+                        </svg>
+
+                        <div class="params">
+                            <div class="param">
+                                <div class="small">Est. Range</div>
+                                <div id="mRange" class="val">84 mi</div>
+                            </div>
+                            <div class="param">
+                                <div class="small">Cell Temp</div>
+                                <div id="mTemp" class="val">28°C</div>
+                            </div>
+                            <div class="param">
+                                <div class="small">Voltage</div>
+                                <div id="mVolt" class="val">52.0V</div>
+                            </div>
+                            <div class="param">
+                                <div class="small">BMS Mode</div>
+                                <div id="mMode" class="val" style="color:#00a6ff">Adaptive</div>
+                            </div>
+                        </div>
+
+                        <div class="controls">
+                            <label class="small" style="display:block; margin-bottom:8px;">Simulator</label>
+                            <input id="mSlider" class="slider" type="range" min="0" max="100" value="70" aria-label="Charge level" />
+                            <div style="font-size:12px; color:#667; margin-top:12px; font-weight:500; min-height:3em; line-height:1.4" id="aiNote">
+                                AI: Optimal charging profile active.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="home-bar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const mSlider = document.getElementById('mSlider');
+    const mFill = document.getElementById('mFill');
+    const mPct = document.getElementById('mPct');
+    const mTemp = document.getElementById('mTemp');
+    const mVolt = document.getElementById('mVolt');
+    const mMode = document.getElementById('mMode');
+    const mRange = document.getElementById('mRange');
+    const aiNote = document.getElementById('aiNote');
+
+    function updateMobile(v){
+        const maxW = 220; // match SVG inner width
+        const w = Math.round((v/100)*maxW);
+        mFill.setAttribute('width', w);
+        mPct.textContent = v + '%';
+        
+        // simulate voltage proportional to SOC
+        const volt = (48 + (v/100)*8).toFixed(1);
+        mVolt.textContent = volt + 'V';
+        
+        // simulate range (arbitrary 120 mile max)
+        mRange.textContent = Math.round(v * 1.2) + ' mi';
+
+        // temp gently increases with SOC
+        const temp = Math.round(22 + (v/100)*10 + (Math.random()-0.5)*1.2);
+        mTemp.textContent = temp + '°C';
+        
+        // AI mode suggestions
+        if(v < 20) { 
+            mMode.textContent = 'Conserve'; 
+            mMode.style.color = '#ff9900';
+            aiNote.innerHTML = '<strong>Warning:</strong> Low SoC. <br>BMS restricted power output to prevent cell damage.';
+        }
+        else if(v < 40) { 
+            mMode.textContent = 'Balance'; 
+            mMode.style.color = '#00e0a1';
+            aiNote.innerHTML = '<strong>Balancing:</strong> <br>Redistributing voltage across cells.';
+        }
+        else if(v < 85) { 
+            mMode.textContent = 'Adaptive'; 
+            mMode.style.color = '#00a6ff';
+            aiNote.innerHTML = '<strong>Optimal:</strong> <br>Standard discharge profile active.';
+        }
+        else { 
+            mMode.textContent = 'Top-off'; 
+            mMode.style.color = '#00a6ff';
+            aiNote.innerHTML = '<strong>Thermal Watch:</strong> <br>Slowing charge rate to minimize heat.';
+        }
+    }
+
+    updateMobile(parseInt(mSlider.value,10));
+    mSlider.addEventListener('input', e=> updateMobile(parseInt(e.target.value,10)));
+    </script>
+</body>
+</html>
